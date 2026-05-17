@@ -1,10 +1,10 @@
-// ==UserScript==
-// @name         Steam Economy Enhancer
+﻿// ==UserScript==
+// @name         Steam Economy Enhancer 2.0
 // @icon         data:image/svg+xml,%0A%3Csvg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" clip-rule="evenodd" viewBox="0 0 267 267"%3E%3Ccircle cx="133.3" cy="133.3" r="133.3" fill="%2326566c"/%3E%3Cpath fill="%23ebebeb" fill-rule="nonzero" d="m50 133 83-83 84 83-84 84-83-84Zm83 62 62-61-62-62v123Z"/%3E%3C/svg%3E
-// @namespace    https://github.com/Nuklon
-// @author       Nuklon
+// @namespace    https://github.com/Parkinwad
+// @author       Nuklon/Parkinwad
 // @license      MIT
-// @version      7.3.0
+// @version      0.1.0
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -19,13 +19,12 @@
 // @require      https://raw.githubusercontent.com/kapetan/jquery-observe/ca67b735bb3ae8d678d1843384ebbe7c02466c61/jquery-observe.js
 // @require      https://raw.githubusercontent.com/rmariuzzo/checkboxes.js/91bec667e9172ceb063df1ecb7505e8ed0bae9ba/src/jquery.checkboxes.js
 // @grant        unsafeWindow
-// @homepageURL  https://github.com/Nuklon/Steam-Economy-Enhancer
-// @homepage     https://github.com/Nuklon/Steam-Economy-Enhancer
-// @supportURL   https://github.com/Nuklon/Steam-Economy-Enhancer/issues
-// @downloadURL  https://raw.githubusercontent.com/Nuklon/Steam-Economy-Enhancer/master/code.user.js
-// @updateURL    https://raw.githubusercontent.com/Nuklon/Steam-Economy-Enhancer/master/code.user.js
+// @homepageURL  https://github.com/Parkinwad/Steam-Economy-Enhancer-2
+// @homepage     https://github.com/Parkinwad/Steam-Economy-Enhancer-2
+// @supportURL   https://github.com/Parkinwad/Steam-Economy-Enhancer-2/issues
+// @downloadURL  https://raw.githubusercontent.com/Parkinwad/Steam-Economy-Enhancer-2/main/code.user.js
+// @updateURL    https://raw.githubusercontent.com/Parkinwad/Steam-Economy-Enhancer-2/main/code.user.js
 // ==/UserScript==
-
 /* disable some eslint rules until the code is cleaned up */
 /* global unsafeWindow, luxon, jQuery, async, List, localforage */
 /* eslint no-undef: off */
@@ -109,7 +108,7 @@
         'COP',  // Colombian Peso (unit: 1)
         'TWD',  // New Taiwan Dollar (unit: 1)
         'KZT',  // Kazakhstani Tenge (unit: 1)
-        'CRC',  // Costa Rican Colón (unit: 5)
+        'CRC',  // Costa Rican ColÃ³n (unit: 5)
         'UYU',  // Uruguayan Peso (unit: 1)
         'KRW',  // South Korean Won (unit: 10)
         'VND',  // Vietnamese Dong (unit: 500)
@@ -289,7 +288,7 @@
         SETTING_TRADEOFFER_PRICE_LABELS: 1,
         SETTING_QUICK_SELL_BUTTONS: 1,
         SETTING_LAST_CACHE: 0,
-        SETTING_RELIST_AUTOMATICALLY: 0
+        SETTING_RELIST_AUTOMATICALLY: 0,
         // Custom optimizations defaults
         SETTING_MIN_NET_PROFIT_CENTS: 5,
         SETTING_DEMAND_THRESHOLD: 1.2,
@@ -2615,7 +2614,7 @@
                         <input id="quick_sell_input" style="background-color: black;color: white;border: transparent;max-width:65px;text-align:center;" type="number" value="${((orderbook.lowest_sell_order || 0) / 100).toFixed(2)}" step="0.01" />&nbsp;
                         <a class="item_market_action_button item_market_action_button_green quick_sell_custom">
                             <span class="item_market_action_button_edge item_market_action_button_left"></span>
-                            <span class="item_market_action_button_contents">➜ Sell</span>
+                            <span class="item_market_action_button_contents">âžœ Sell</span>
                             <span class="item_market_action_button_edge item_market_action_button_right"></span>
                             <span class="item_market_action_button_preload"></span>
                         </a>
@@ -2663,7 +2662,7 @@
 
             $('#see_settings').remove();
             $('#global_action_menu').
-                prepend('<span id="see_settings"><a href="javascript:void(0)">⬖ Steam Economy Enhancer</a></span>');
+                prepend('<span id="see_settings"><a href="javascript:void(0)">â¬– Steam Economy Enhancer</a></span>');
             $('#see_settings').on('click', '*', () => openSettings());
 
             const appId = getActiveInventory().m_appid;
@@ -2899,7 +2898,7 @@
                     const sellPrice = calculateSellPriceBeforeFees(null, orderbook, false, 0, 65535);
 
                     const itemPrice = sellPrice == 65535
-                        ? '∞'
+                        ? 'âˆž'
                         : formatPrice(market.getPriceIncludingFees(sellPrice));
 
                     const elementName = `${(currentPage == PAGE_TRADEOFFER ? '#item' : '#')}${item.appid}_${item.contextid}_${item.id}`;
@@ -3081,7 +3080,7 @@
                             $(
                                 '.market_table_value > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)',
                                 listingUI
-                            ).append(` ➤ <span title="This is likely the highest buy order price.">${highestBuyOrderPrice
+                            ).append(` âž¤ <span title="This is likely the highest buy order price.">${highestBuyOrderPrice
                                 }</span>`);
 
                             logConsole('============================');
@@ -3501,7 +3500,7 @@
             }
 
             $('#my_market_selllistings_number').append(`<span id="my_market_sell_listings_total_amount"> [${totalSellOrderAmount}]</span>`)
-                .append(`<span id="my_market_sell_listings_total_price">, ${formatPrice(totalSellOrderPriceBuyer)} ➤ ${formatPrice(totalSellOrderPriceSeller)}</span>`);
+                .append(`<span id="my_market_sell_listings_total_price">, ${formatPrice(totalSellOrderPriceBuyer)} âž¤ ${formatPrice(totalSellOrderPriceSeller)}</span>`);
 
             $('#my_market_buylistings_number').append(`<span id="my_market_buy_listings_total_amount"> [${totalBuyOrderAmount}]</span>`)
                 .append(`<span id="my_market_buy_listings_total_price">, ${formatPrice(totalBuyOrderPrice)}</span>`);
@@ -3705,8 +3704,8 @@
             let asc = true;
 
             // (Re)set the asc/desc arrows.
-            const arrow_down = '▼';
-            const arrow_up = '▲';
+            const arrow_down = 'â–¼';
+            const arrow_up = 'â–²';
 
             $('.market_listing_table_header > span', elem).each(function () {
                 if ($(this).hasClass('market_listing_edit_buttons')) {
@@ -4043,7 +4042,7 @@
             });
 
             $('#see_settings').remove();
-            $('#global_action_menu').prepend('<span id="see_settings"><a href="javascript:void(0)">⬖ Steam Economy Enhancer</a></span>');
+            $('#global_action_menu').prepend('<span id="see_settings"><a href="javascript:void(0)">â¬– Steam Economy Enhancer</a></span>');
             $('#see_settings').on('click', '*', () => openSettings());
 
             processMarketListings();
