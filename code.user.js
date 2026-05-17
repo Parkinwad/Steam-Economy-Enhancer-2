@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.01
+// @version      0.1.02
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -4375,7 +4375,7 @@
             <div style="margin-top:12px; border-top: 1px solid #444; padding-top: 8px;">
                 <h3 style="color: #407736; margin: 0 0 8px 0;">Deal Scanner</h3>
                 <div style="margin-top:6px;">
-                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${(getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED) == 1) ? "checked" : ""}>
+                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED) == 1 ? "checked" : ""}>
                     Enable Deal Scanner
                 </div>
                 <div style="margin-top:6px;">
