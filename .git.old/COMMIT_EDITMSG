@@ -1,0 +1,26 @@
+Initial Commit
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+#
+# Initial commit
+#
+# Changes to be committed:
+#	new file:   .continue/rules/edit-code-rules.md
+#	new file:   .editorconfig
+#	new file:   .gitignore
+#	new file:   DEAL_SCANNER_SUMMARY.md
+#	new file:   LICENSE
+#	new file:   README.md
+#	new file:   Summaries/Steam_Economy_Enhancer_Merge_Summary.md
+#	new file:   assets/icon.svg
+#	new file:   assets/inventory.png
+#	new file:   assets/market.png
+#	new file:   assets/settings.png
+#	new file:   assets/tradeoffer.png
+#	new file:   code.user.js
+#	new file:   code.user.js.merged
+#	new file:   eslint.config.mjs
+#	new file:   merge_clean.js
+#	new file:   package.json
+#
