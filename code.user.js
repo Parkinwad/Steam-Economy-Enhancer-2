@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Nuklon/Parkinwad
 // @license      MIT
-// @version      0.1.0
+// @version      0.1.01
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
