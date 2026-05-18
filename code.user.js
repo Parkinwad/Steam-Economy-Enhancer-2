@@ -582,9 +582,7 @@
 
 
     //#region Deal Scanner
-    // Deal scanner settings
-    const SETTING_DEAL_MAX_ITEMS_PER_SCAN = 'SETTING_DEAL_MAX_ITEMS_PER_SCAN';
-    const SETTING_DEAL_MAX_SPEND_PER_SCAN = 'SETTING_DEAL_MAX_SPEND_PER_SCAN';
+
     // Deal scanner state
     let dealScannerActive = false;
     let dealsFound = [];
