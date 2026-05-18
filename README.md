@@ -1,4 +1,4 @@
-# <img src="assets/icon.svg" width="32" align="center"> Steam Economy Enhancer
+# <img src="assets/icon.svg" width="32" align="center"> Steam Economy Enhancer 2.0
 
 A free userscript to enhance your Steam Inventory, Steam Market and Steam Tradeoffers.
 
@@ -34,7 +34,7 @@ This can be defined in Steam Economy Enhancer's settings, which you can find at 
 
 ### Download
 
-[Install Steam Economy Enhancer](https://raw.githubusercontent.com/Nuklon/Steam-Economy-Enhancer/master/code.user.js)
+[Install Steam Economy Enhancer](https://raw.githubusercontent.com/Parkinwad/Steam-Economy-Enhancer-2/main/code.user.js)
 
 *[Violentmonkey](https://violentmonkey.github.io/) is required to install.*
 
