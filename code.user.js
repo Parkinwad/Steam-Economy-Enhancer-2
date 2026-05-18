@@ -280,7 +280,7 @@
     const SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS = 'SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS';
     const SETTING_DEAL_MAX_ITEMS_PER_SCAN = 'SETTING_DEAL_MAX_ITEMS_PER_SCAN';
     const SETTING_DEAL_MAX_SPEND_PER_SCAN = 'SETTING_DEAL_MAX_SPEND_PER_SCAN';
-    const SETTING_DEAL_SCAN_DELAY_MS = 'SETTING_DEAL_SCAN_DELAY_MS';    }
+    const SETTING_DEAL_SCAN_DELAY_MS = 'SETTING_DEAL_SCAN_DELAY_MS';
 
     const settingDefaults = {
         SETTING_MIN_NORMAL_PRICE: 0.05,
@@ -315,6 +315,7 @@
 
     function getSettingWithDefault(name) {
         return getLocalStorageItem(name) || (name in settingDefaults ? settingDefaults[name] : null);
+    }
 
     function setSetting(name, value) {
         setLocalStorageItem(name, value);
