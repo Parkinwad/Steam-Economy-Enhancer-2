@@ -1,3 +1,6 @@
 /node_modules/
 /package-lock.json
 /Summaries
+/assets
+/.js Backups
+/.continue/rules

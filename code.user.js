@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.04
+// @version      0.1.05
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -1303,6 +1303,46 @@
         return feeInfo.amount;
     };
     //#endregion
+
+    // Calculate the seller price from the desired received amount
+    SteamMarket.prototype.getPriceBeforeFeesForDesiredReceivedAmount = function (desiredReceived, item) {
+        let publisherFee = -1;
+        if (item != null) {
+            if (item.market_fee != null) {
+                publisherFee = item.market_fee;
+            } else if (item.description != null && item.description.market_fee != null) {
+                publisherFee = item.description.market_fee;
+            }
+        }
+        if (publisherFee == -1) {
+            if (this.walletInfo != null) {
+                publisherFee = this.walletInfo['wallet_publisher_fee_percent_default'];
+            } else {
+                publisherFee = 0.10;
+            }
+        }
+
+        // Binary search to find the gross price that yields the desired net amount
+        let low = 1;
+        let high = desiredReceived * 2; // Start with a reasonable upper bound
+        let mid = 0;
+        
+        // Iterate until we converge on the correct price
+        for (let i = 0; i < 100; i++) {
+            mid = Math.round((low + high) / 2);
+            const receivedAmount = this.getPriceIncludingFees(mid, item);
+            
+            if (receivedAmount < desiredReceived) {
+                low = mid + 1;
+            } else if (receivedAmount > desiredReceived) {
+                high = mid - 1;
+            } else {
+                break; // Exact match found
+            }
+        }
+        
+        return mid;
+    };
 
     //#region Steam Market / Inventory helpers
     function getMarketHashName(item) {
@@ -3311,27 +3351,8 @@
         return feeInfo.amount;
     };
                 
-        // Calculate the gross sell price needed to receive a desired net amount after all fees
-    SteamMarket.prototype.getPriceBeforeFeesForDesiredReceivedAmount = function (desiredReceivedAmount) {
-        let low = desiredReceivedAmount;
-        let high = desiredReceivedAmount * 2;
         
-        while (low <= high) {
-            const mid = Math.floor((low + high) / 2);
-            const receivedPrice = this.getPriceIncludingFees(mid);
-            
-            if (receivedPrice < desiredReceivedAmount) {
-                low = mid + 1;
-            } else if (receivedPrice > desiredReceivedAmount) {
-                high = mid - 1;
-            } else {
-                return mid;
-            }
-        }
-        
-        return low;
-    };
-         
+        // Remove listing from lists
             const listingUI = getListingFromLists(listingid).elm;
             const isBuyOrder = listingUI.id.startsWith('mybuyorder_');
 
