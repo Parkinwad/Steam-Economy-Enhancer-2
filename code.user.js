@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.05
+// @version      0.1.06
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -3328,30 +3328,6 @@
             1
         );
 
-        // Calculate the buyer price from the seller price
-        SteamMarket.prototype.getPriceIncludingFees = function (price, item) {
-            let publisherFee = -1;
-            if (item != null) {
-                if (item.market_fee != null) {
-                publisherFee = item.market_fee;
-                } else if (item.description != null && item.description.market_fee != null) {
-                    publisherFee = item.description.market_fee;
-                }
-            }
-            if (publisherFee == -1) {
-                if (this.walletInfo != null) {
-                    publisherFee = this.walletInfo['wallet_publisher_fee_percent_default'];
-                } else {
-                publisherFee = 0.10;
-                }
-            }                   
-        
-        price = Math.round(price);
-        const feeInfo = CalculateAmountToSendForDesiredReceivedAmount(price, publisherFee, this.walletInfo);
-        return feeInfo.amount;
-    };
-                
-        
         // Remove listing from lists
             const listingUI = getListingFromLists(listingid).elm;
             const isBuyOrder = listingUI.id.startsWith('mybuyorder_');
