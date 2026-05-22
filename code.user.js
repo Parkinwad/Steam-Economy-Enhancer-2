@@ -283,49 +283,39 @@
     const SETTING_DEAL_SCAN_DELAY_MS = 'SETTING_DEAL_SCAN_DELAY_MS';
 
     const settingDefaults = {
-        SETTING_MIN_NORMAL_PRICE: 0.05,
-        SETTING_MAX_NORMAL_PRICE: 2.50,
-        SETTING_MIN_FOIL_PRICE: 0.15,
-        SETTING_MAX_FOIL_PRICE: 10,
-        SETTING_MIN_MISC_PRICE: 0.05,
-        SETTING_MAX_MISC_PRICE: 10,
-        SETTING_PRICE_OFFSET: 0.00,
-        SETTING_PRICE_MIN_CHECK_PRICE: 0.00,
-        SETTING_PRICE_MIN_LIST_PRICE: 0.03,
-        SETTING_PRICE_ALGORITHM: 1,
-        SETTING_PRICE_IGNORE_LOWEST_Q: 1,
-        SETTING_PRICE_HISTORY_HOURS: 12,
-        SETTING_INVENTORY_PRICE_LABELS: 1,
-        SETTING_TRADEOFFER_PRICE_LABELS: 1,
-        SETTING_QUICK_SELL_BUTTONS: 1,
-        SETTING_LAST_CACHE: 0,
-        SETTING_RELIST_AUTOMATICALLY: 0,
-        // Custom optimizations defaults
-        SETTING_MIN_NET_PROFIT_CENTS: 5,
-        SETTING_DEMAND_THRESHOLD: 1.2,
-        SETTING_DEMAND_DISCOUNT: 0.02,
-        // Deal Scanner defaults
-        SETTING_DEAL_SCANNER_ENABLED: 0,
-        SETTING_DEAL_MIN_PROFIT_CENTS: 15,
-        SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS: 25,
-        SETTING_DEAL_MAX_ITEMS_PER_SCAN: 50,
-        SETTING_DEAL_MAX_SPEND_PER_SCAN: 10,
-        SETTING_DEAL_SCAN_DELAY_MS: 3000,
+        [SETTING_MIN_NORMAL_PRICE]: 0.05,
+        [SETTING_MAX_NORMAL_PRICE]: 2.50,
+        [SETTING_MIN_FOIL_PRICE]: 0.15,
+        [SETTING_MAX_FOIL_PRICE]: 10,
+        [SETTING_MIN_MISC_PRICE]: 0.05,
+        [SETTING_MAX_MISC_PRICE]: 2.50,
+        [SETTING_PRICE_OFFSET]: 0.01,
+        [SETTING_PRICE_MIN_CHECK_PRICE]: 20,
+        [SETTING_PRICE_MIN_LIST_PRICE]: 30,
+        [SETTING_PRICE_ALGORITHM]: "linear",
+        [SETTING_DEAL_SCANNER_ENABLED]: 0,
+        [SETTING_DEAL_MIN_PROFIT_CENTS]: 15,
+        [SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS]: 25,
+        [SETTING_DEAL_MAX_ITEMS_PER_SCAN]: 50,
+        [SETTING_DEAL_MAX_SPEND_PER_SCAN]: 10,
+        [SETTING_DEAL_SCAN_DELAY_MS]: 3000,
     };
 
     function getSettingWithDefault(name) {
         const value = getLocalStorageItem(name);
-            if (value !== null) {
-                return Number(value);  // Convert string to number
+
+        if (value !== null) {
+            const parsed = Number(value);
+
+            if (!Number.isNaN(parsed)) {
+                return parsed;
             }
-            return name in settingDefaults ? settingDefaults[name] : null;
-        }   
+        }
 
-    function setSetting(name, value) {
-        setLocalStorageItem(name, value);
-    }
+        return settingDefaults[name] ?? null;
+    }   
     //#endregion
-
+    
     //#region Storage
 
     const storagePersistent = localforage.createInstance({
@@ -4428,12 +4418,13 @@
                 <div style="margin-top:6px;">
                     Max Items Per Scan: <input type="number" id="${SETTING_DEAL_MAX_ITEMS_PER_SCAN}" value=${getSettingWithDefault(SETTING_DEAL_MAX_ITEMS_PER_SCAN)}> items</div>
                 <div style="margin-top:6px;">
-                    Max Spend Per Scan ($): <input type="number" id="${SETTING_DEAL_MAX_SPEND_PER_SCAN}" value=${getSettingWithDefault(SETTING_DEAL_MAX_SPEND_PER_SCAN)}> dollars</div>
-                <div style="margin-top:8px;">
+                <div style="margin-top:6px;">
+                    Scan Delay (ms): <input type="number" id="${SETTING_DEAL_SCAN_DELAY_MS}" value=${getSettingWithDefault(SETTING_DEAL_SCAN_DELAY_MS)}> ms</div>
                     <button id="deal_scanner_run" class="btn_darkblue_white_innerfade btn_medium" style="padding: 4px 12px;">Scan for Deals</button>
                     <span id="deal_scanner_status" style="margin-left: 8px; color: #767676; font-size: 11px;"></span>
                 </div>
                 <div id="deal_scanner_results" style="margin-top: 8px; max-height: 300px; overflow-y: auto; display: none;"></div>
+                <div style="margin-top:6px;">
             </div></div>
         </div>`);
 
