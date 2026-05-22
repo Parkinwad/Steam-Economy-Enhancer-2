@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.08
+// @version      0.1.09
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -4399,7 +4399,7 @@
             <div style="margin-top:6px;">
                 Automatically relist overpriced market listings (slow on large inventories):&nbsp;
                 <input id="${SETTING_RELIST_AUTOMATICALLY}" class="market_relist_auto" type="checkbox" ${getSettingWithDefault(SETTING_RELIST_AUTOMATICALLY) == 1 ? 'checked' : ''}>
-            
+                </div>
             <div style="margin-top:12px; border-top: 1px solid #444; padding-top: 8px;">
                 <h3 style="color: #407736; margin: 0 0 8px 0;">Deal Scanner</h3>
                 <div style="margin-top:6px;">
