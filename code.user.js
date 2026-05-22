@@ -4612,5 +4612,3 @@
         initDealScanner();
 
 }(jQuery, async));;
-
-          initDealScanner();
