@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.09
+// @version      0.1.10
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -314,7 +314,10 @@
     };
 
     function getSettingWithDefault(name) {
-        return getLocalStorageItem(name) || (name in settingDefaults ? settingDefaults[name] : null);
+        const value = getLocalStorageItem(name);
+        return value !== null
+            ? value
+            : (name in settingDefaults ? settingDefaults[name] : null);
     }
 
     function setSetting(name, value) {
@@ -4403,7 +4406,7 @@
             <div style="margin-top:12px; border-top: 1px solid #444; padding-top: 8px;">
                 <h3 style="color: #407736; margin: 0 0 8px 0;">Deal Scanner</h3>
                 <div style="margin-top:6px;">
-                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED) == 1 ? "checked" : ""}>
+                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${Number(getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED)) == 1 ? "checked" : ""}>
                     Enable Deal Scanner
                 </div>
                 <div style="margin-top:6px;">
@@ -4442,7 +4445,7 @@
             setSetting(SETTING_MIN_NET_PROFIT_CENTS, $(`#${SETTING_MIN_NET_PROFIT_CENTS}`).val());
             setSetting(SETTING_DEMAND_THRESHOLD, $(`#${SETTING_DEMAND_THRESHOLD}`).val());
             setSetting(SETTING_DEMAND_DISCOUNT, $(`#${SETTING_DEMAND_DISCOUNT}`).val() / 100);
-            setSetting(SETTING_DEAL_SCANNER_ENABLED, $(`#${SETTING_DEAL_SCANNER_ENABLED}`).is(":checked") ? 1 : 0);
+            setSetting(SETTING_DEAL_SCANNER_ENABLED, $(`#${SETTING_DEAL_SCANNER_ENABLED}`, price_options).prop('checked') ? '1' : '0');
             setSetting(SETTING_DEAL_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_MIN_PROFIT_CENTS}`).val());
             setSetting(SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS}`).val());
             setSetting(SETTING_DEAL_MAX_ITEMS_PER_SCAN, $(`#${SETTING_DEAL_MAX_ITEMS_PER_SCAN}`).val());
