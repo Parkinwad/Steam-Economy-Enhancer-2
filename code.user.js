@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.10
+// @version      0.1.11
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -315,10 +315,11 @@
 
     function getSettingWithDefault(name) {
         const value = getLocalStorageItem(name);
-        return value !== null
-            ? value
-            : (name in settingDefaults ? settingDefaults[name] : null);
-    }
+            if (value !== null) {
+                return Number(value);  // Convert string to number
+            }
+            return name in settingDefaults ? settingDefaults[name] : null;
+        }   
 
     function setSetting(name, value) {
         setLocalStorageItem(name, value);
