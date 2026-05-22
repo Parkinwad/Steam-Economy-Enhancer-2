@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.14
+// @version      0.1.15
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -4418,7 +4418,6 @@
                 <div style="margin-top:6px;">
                     Max Items Per Scan: <input type="number" id="${SETTING_DEAL_MAX_ITEMS_PER_SCAN}" value=${getSettingWithDefault(SETTING_DEAL_MAX_ITEMS_PER_SCAN)}> items</div>
                 <div style="margin-top:6px;">
-                <div style="margin-top:6px;">
                     Scan Delay (ms): <input type="number" id="${SETTING_DEAL_SCAN_DELAY_MS}" value=${getSettingWithDefault(SETTING_DEAL_SCAN_DELAY_MS)}> ms</div>
                     <button id="deal_scanner_run" class="btn_darkblue_white_innerfade btn_medium" style="padding: 4px 12px;">Scan for Deals</button>
                     <span id="deal_scanner_status" style="margin-left: 8px; color: #767676; font-size: 11px;"></span>
@@ -4449,11 +4448,11 @@
             setSetting(SETTING_DEMAND_THRESHOLD, $(`#${SETTING_DEMAND_THRESHOLD}`).val());
             setSetting(SETTING_DEMAND_DISCOUNT, $(`#${SETTING_DEMAND_DISCOUNT}`).val() / 100);
             setSetting(SETTING_DEAL_SCANNER_ENABLED, $(`#${SETTING_DEAL_SCANNER_ENABLED}`, price_options).prop('checked') ? '1' : '0');
-            setSetting(SETTING_DEAL_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_MIN_PROFIT_CENTS}`).val());
-            setSetting(SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS}`).val());
-            setSetting(SETTING_DEAL_MAX_ITEMS_PER_SCAN, $(`#${SETTING_DEAL_MAX_ITEMS_PER_SCAN}`).val());
-            setSetting(SETTING_DEAL_MAX_SPEND_PER_SCAN, $(`#${SETTING_DEAL_MAX_SPEND_PER_SCAN}`).val());
-            setSetting(SETTING_DEAL_SCAN_DELAY_MS, $(`#${SETTING_DEAL_SCAN_DELAY_MS}`).val());
+            setSetting(SETTING_DEAL_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_MIN_PROFIT_CENTS}`, price_options).val());
+            setSetting(SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS}`, price_options).val());
+            setSetting(SETTING_DEAL_MAX_ITEMS_PER_SCAN, $(`#${SETTING_DEAL_MAX_ITEMS_PER_SCAN}`, price_options).val());
+            setSetting(SETTING_DEAL_MAX_SPEND_PER_SCAN, $(`#${SETTING_DEAL_MAX_SPEND_PER_SCAN}`, price_options).val());
+            setSetting(SETTING_DEAL_SCAN_DELAY_MS, $(`#${SETTING_DEAL_SCAN_DELAY_MS}`, price_options).val());
 
             window.location.reload();
         });
