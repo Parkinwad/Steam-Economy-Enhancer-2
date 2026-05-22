@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.06
+// @version      0.1.07
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -4612,3 +4612,5 @@
         initDealScanner();
 
 }(jQuery, async));;
+
+          initDealScanner();
