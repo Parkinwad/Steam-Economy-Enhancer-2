@@ -1,6 +1,5 @@
 /node_modules/
 /package-lock.json
 /Summaries
-/assets
-/.js Backups
+/backups
 /.continue/rules
