@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.19
+// @version      0.1.04
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -108,7 +108,7 @@
         'COP',  // Colombian Peso (unit: 1)
         'TWD',  // New Taiwan Dollar (unit: 1)
         'KZT',  // Kazakhstani Tenge (unit: 1)
-        'CRC',  // Costa Rican Colón (unit: 5)
+        'CRC',  // Costa Rican ColÃ³n (unit: 5)
         'UYU',  // Uruguayan Peso (unit: 1)
         'KRW',  // South Korean Won (unit: 10)
         'VND',  // Vietnamese Dong (unit: 500)
@@ -283,39 +283,45 @@
     const SETTING_DEAL_SCAN_DELAY_MS = 'SETTING_DEAL_SCAN_DELAY_MS';
 
     const settingDefaults = {
-        [SETTING_MIN_NORMAL_PRICE]: 0.05,
-        [SETTING_MAX_NORMAL_PRICE]: 2.50,
-        [SETTING_MIN_FOIL_PRICE]: 0.15,
-        [SETTING_MAX_FOIL_PRICE]: 10,
-        [SETTING_MIN_MISC_PRICE]: 0.05,
-        [SETTING_MAX_MISC_PRICE]: 2.50,
-        [SETTING_PRICE_OFFSET]: 0.01,
-        [SETTING_PRICE_MIN_CHECK_PRICE]: 20,
-        [SETTING_PRICE_MIN_LIST_PRICE]: 30,
-        [SETTING_PRICE_ALGORITHM]: "linear",
-        [SETTING_DEAL_SCANNER_ENABLED]: 0,
-        [SETTING_DEAL_MIN_PROFIT_CENTS]: 15,
-        [SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS]: 25,
-        [SETTING_DEAL_MAX_ITEMS_PER_SCAN]: 50,
-        [SETTING_DEAL_MAX_SPEND_PER_SCAN]: 10,
-        [SETTING_DEAL_SCAN_DELAY_MS]: 3000,
+        SETTING_MIN_NORMAL_PRICE: 0.05,
+        SETTING_MAX_NORMAL_PRICE: 2.50,
+        SETTING_MIN_FOIL_PRICE: 0.15,
+        SETTING_MAX_FOIL_PRICE: 10,
+        SETTING_MIN_MISC_PRICE: 0.05,
+        SETTING_MAX_MISC_PRICE: 10,
+        SETTING_PRICE_OFFSET: 0.00,
+        SETTING_PRICE_MIN_CHECK_PRICE: 0.00,
+        SETTING_PRICE_MIN_LIST_PRICE: 0.03,
+        SETTING_PRICE_ALGORITHM: 1,
+        SETTING_PRICE_IGNORE_LOWEST_Q: 1,
+        SETTING_PRICE_HISTORY_HOURS: 12,
+        SETTING_INVENTORY_PRICE_LABELS: 1,
+        SETTING_TRADEOFFER_PRICE_LABELS: 1,
+        SETTING_QUICK_SELL_BUTTONS: 1,
+        SETTING_LAST_CACHE: 0,
+        SETTING_RELIST_AUTOMATICALLY: 0,
+        // Custom optimizations defaults
+        SETTING_MIN_NET_PROFIT_CENTS: 5,
+        SETTING_DEMAND_THRESHOLD: 1.2,
+        SETTING_DEMAND_DISCOUNT: 0.02,
+        // Deal Scanner defaults
+        SETTING_DEAL_SCANNER_ENABLED: 0,
+        SETTING_DEAL_MIN_PROFIT_CENTS: 15,
+        SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS: 25,
+        SETTING_DEAL_MAX_ITEMS_PER_SCAN: 50,
+        SETTING_DEAL_MAX_SPEND_PER_SCAN: 10,
+        SETTING_DEAL_SCAN_DELAY_MS: 3000,
     };
 
     function getSettingWithDefault(name) {
-        const value = getLocalStorageItem(name);
+        return getLocalStorageItem(name) || (name in settingDefaults ? settingDefaults[name] : null);
+    }
 
-        if (value !== null) {
-            const parsed = Number(value);
-
-            if (!Number.isNaN(parsed)) {
-                return parsed;
-            }
-        }
-
-        return settingDefaults[name] ?? null;
-    }   
+    function setSetting(name, value) {
+        setLocalStorageItem(name, value);
+    }
     //#endregion
-    
+
     //#region Storage
 
     const storagePersistent = localforage.createInstance({
@@ -360,7 +366,7 @@
 
     function setLocalStorageItem(name, value) {
         try {
-            setSetting(name, value);
+            localStorage.setItem(name, value);
             return true;
         } catch (e) {
             logConsole(`Failed to set local storage item ${name}, ${e}.`);
@@ -386,22 +392,9 @@
             return false;
         }
     }
-    
-    function setSetting(name, value) {
-        try {
-            localStorage.setItem(name, value);
-        } catch (e) {
-            logConsole(`Failed to set setting ${name}, ${e}.`);
-            return false;
-        }
-    }
-    
     //#endregion
 
     //#region Price helpers
-    
-
-
     function formatPrice(valueInCents) {
         return unsafeWindow.v_currencyformat(valueInCents, currencyCode, currencyCountry);
     }
@@ -2656,7 +2649,7 @@
                         <input id="quick_sell_input" style="background-color: black;color: white;border: transparent;max-width:65px;text-align:center;" type="number" value="${((orderbook.lowest_sell_order || 0) / 100).toFixed(2)}" step="0.01" />&nbsp;
                         <a class="item_market_action_button item_market_action_button_green quick_sell_custom">
                             <span class="item_market_action_button_edge item_market_action_button_left"></span>
-                            <span class="item_market_action_button_contents">➜Sell</span>
+                            <span class="item_market_action_button_contents">âžœ Sell</span>
                             <span class="item_market_action_button_edge item_market_action_button_right"></span>
                             <span class="item_market_action_button_preload"></span>
                         </a>
@@ -2704,7 +2697,7 @@
 
             $('#see_settings').remove();
             $('#global_action_menu').
-                  prepend('<span id="see_settings"><a href="javascript:void(0)">Steam Economy Enhancer</a></span>')
+                prepend('<span id="see_settings"><a href="javascript:void(0)">â¬– Steam Economy Enhancer</a></span>');
             $('#see_settings').on('click', '*', () => openSettings());
 
             const appId = getActiveInventory().m_appid;
@@ -2784,7 +2777,16 @@
                 'click',
                 '*',
                 () => {
-                        window.location.reload();
+        
+            setSetting(SETTING_MIN_NET_PROFIT_CENTS, $(`#${SETTING_MIN_NET_PROFIT_CENTS}`).val());
+            setSetting(SETTING_DEMAND_THRESHOLD, $(`#${SETTING_DEMAND_THRESHOLD}`).val());
+            setSetting(SETTING_DEMAND_DISCOUNT, $(`#${SETTING_DEMAND_DISCOUNT}`).val() / 100);
+            setSetting(SETTING_DEAL_SCANNER_ENABLED, $(`#${SETTING_DEAL_SCANNER_ENABLED}`).is(":checked") ? 1 : 0);
+            setSetting(SETTING_DEAL_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_MIN_PROFIT_CENTS}`).val());
+            setSetting(SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS}`).val());
+            setSetting(SETTING_DEAL_MAX_ITEMS_PER_SCAN, $(`#${SETTING_DEAL_MAX_ITEMS_PER_SCAN}`).val());
+            setSetting(SETTING_DEAL_MAX_SPEND_PER_SCAN, $(`#${SETTING_DEAL_MAX_SPEND_PER_SCAN}`).val());
+            setSetting(SETTING_DEAL_SCAN_DELAY_MS, $(`#${SETTING_DEAL_SCAN_DELAY_MS}`).val());            window.location.reload();
                 }
             );
 
@@ -2931,7 +2933,7 @@
                     const sellPrice = calculateSellPriceBeforeFees(null, orderbook, false, 0, 65535);
 
                     const itemPrice = sellPrice == 65535
-                        ? '∞'
+                        ? 'âˆž'
                         : formatPrice(market.getPriceIncludingFees(sellPrice));
 
                     const elementName = `${(currentPage == PAGE_TRADEOFFER ? '#item' : '#')}${item.appid}_${item.contextid}_${item.id}`;
@@ -3113,8 +3115,8 @@
                             $(
                                 '.market_table_value > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)',
                                 listingUI
-                            ).append(` ➤ <span title="This is likely the highest buy order price.">${highestBuyOrderPrice
-                                }</span>`); 
+                            ).append(` âž¤ <span title="This is likely the highest buy order price.">${highestBuyOrderPrice
+                                }</span>`);
 
                             logConsole('============================');
                             logConsole(JSON.stringify(listing));
@@ -3326,6 +3328,30 @@
             1
         );
 
+        // Calculate the buyer price from the seller price
+        SteamMarket.prototype.getPriceIncludingFees = function (price, item) {
+            let publisherFee = -1;
+            if (item != null) {
+                if (item.market_fee != null) {
+                publisherFee = item.market_fee;
+                } else if (item.description != null && item.description.market_fee != null) {
+                    publisherFee = item.description.market_fee;
+                }
+            }
+            if (publisherFee == -1) {
+                if (this.walletInfo != null) {
+                    publisherFee = this.walletInfo['wallet_publisher_fee_percent_default'];
+                } else {
+                publisherFee = 0.10;
+                }
+            }                   
+        
+        price = Math.round(price);
+        const feeInfo = CalculateAmountToSendForDesiredReceivedAmount(price, publisherFee, this.walletInfo);
+        return feeInfo.amount;
+    };
+                
+        
         // Remove listing from lists
             const listingUI = getListingFromLists(listingid).elm;
             const isBuyOrder = listingUI.id.startsWith('mybuyorder_');
@@ -3533,7 +3559,7 @@
             }
 
             $('#my_market_selllistings_number').append(`<span id="my_market_sell_listings_total_amount"> [${totalSellOrderAmount}]</span>`)
-                .append(`<span id="my_market_sell_listings_total_price">, ${formatPrice(totalSellOrderPriceBuyer)} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¾ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤ ${formatPrice(totalSellOrderPriceSeller)}</span>`);
+                .append(`<span id="my_market_sell_listings_total_price">, ${formatPrice(totalSellOrderPriceBuyer)} âž¤ ${formatPrice(totalSellOrderPriceSeller)}</span>`);
 
             $('#my_market_buylistings_number').append(`<span id="my_market_buy_listings_total_amount"> [${totalBuyOrderAmount}]</span>`)
                 .append(`<span id="my_market_buy_listings_total_price">, ${formatPrice(totalBuyOrderPrice)}</span>`);
@@ -3737,8 +3763,8 @@
             let asc = true;
 
             // (Re)set the asc/desc arrows.
-            const arrow_down = 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼';
-            const arrow_up = 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â²';
+            const arrow_down = 'â–¼';
+            const arrow_up = 'â–²';
 
             $('.market_listing_table_header > span', elem).each(function () {
                 if ($(this).hasClass('market_listing_edit_buttons')) {
@@ -4341,17 +4367,6 @@
 
     //#region Settings
     function openSettings() {
-        // Save default values to localStorage on first open (if not already present)
-        const dealScannerSettings = ['SETTING_DEAL_SCANNER_ENABLED', 'SETTING_DEAL_MIN_PROFIT_CENTS', 'SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS', 'SETTING_DEAL_MAX_ITEMS_PER_SCAN', 'SETTING_DEAL_MAX_SPEND_PER_SCAN','SETTING_DEAL_SCAN_DELAY_MS'];
-
-        for (const setting of dealScannerSettings) {
-            const storedValue = getLocalStorageItem(setting);
-            if (storedValue === null) {
-                // First time opening - save default value
-                setSetting(setting, settingDefaults[setting]);
-            }
-        }
-
         const price_options = $(`<div id="see_settings_modal">
             <div>
                 Calculate prices as the:&nbsp;
@@ -4417,11 +4432,11 @@
             <div style="margin-top:6px;">
                 Automatically relist overpriced market listings (slow on large inventories):&nbsp;
                 <input id="${SETTING_RELIST_AUTOMATICALLY}" class="market_relist_auto" type="checkbox" ${getSettingWithDefault(SETTING_RELIST_AUTOMATICALLY) == 1 ? 'checked' : ''}>
-                </div>
+            
             <div style="margin-top:12px; border-top: 1px solid #444; padding-top: 8px;">
                 <h3 style="color: #407736; margin: 0 0 8px 0;">Deal Scanner</h3>
                 <div style="margin-top:6px;">
-                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${Number(getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED)) == 1 ? "checked" : ""}>
+                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED) == 1 ? "checked" : ""}>
                     Enable Deal Scanner
                 </div>
                 <div style="margin-top:6px;">
@@ -4431,13 +4446,12 @@
                 <div style="margin-top:6px;">
                     Max Items Per Scan: <input type="number" id="${SETTING_DEAL_MAX_ITEMS_PER_SCAN}" value=${getSettingWithDefault(SETTING_DEAL_MAX_ITEMS_PER_SCAN)}> items</div>
                 <div style="margin-top:6px;">
-                <div style="margin-top:6px;">
-                    Scan Delay (ms): <input type="number" id="${SETTING_DEAL_SCAN_DELAY_MS}" value=${getSettingWithDefault(SETTING_DEAL_SCAN_DELAY_MS)}> ms</div>
+                    Max Spend Per Scan ($): <input type="number" id="${SETTING_DEAL_MAX_SPEND_PER_SCAN}" value=${getSettingWithDefault(SETTING_DEAL_MAX_SPEND_PER_SCAN)}> dollars</div>
+                <div style="margin-top:8px;">
                     <button id="deal_scanner_run" class="btn_darkblue_white_innerfade btn_medium" style="padding: 4px 12px;">Scan for Deals</button>
                     <span id="deal_scanner_status" style="margin-left: 8px; color: #767676; font-size: 11px;"></span>
                 </div>
                 <div id="deal_scanner_results" style="margin-top: 8px; max-height: 300px; overflow-y: auto; display: none;"></div>
-                <div style="margin-top:6px;">
             </div></div>
         </div>`);
 
@@ -4458,21 +4472,9 @@
             setSetting(SETTING_INVENTORY_PRICE_LABELS, $(`#${SETTING_INVENTORY_PRICE_LABELS}`, price_options).prop('checked') ? 1 : 0);
             setSetting(SETTING_TRADEOFFER_PRICE_LABELS, $(`#${SETTING_TRADEOFFER_PRICE_LABELS}`, price_options).prop('checked') ? 1 : 0);
             setSetting(SETTING_QUICK_SELL_BUTTONS, $(`#${SETTING_QUICK_SELL_BUTTONS}`, price_options).prop('checked') ? 1 : 0);
-            setSetting(SETTING_MIN_NET_PROFIT_CENTS, $(`#${SETTING_MIN_NET_PROFIT_CENTS}`).val());
-            setSetting(SETTING_DEMAND_THRESHOLD, $(`#${SETTING_DEMAND_THRESHOLD}`).val());
-            setSetting(SETTING_DEMAND_DISCOUNT, $(`#${SETTING_DEMAND_DISCOUNT}`).val() / 100);
-            setSetting(SETTING_DEAL_SCANNER_ENABLED, $(`#${SETTING_DEAL_SCANNER_ENABLED}`, price_options).prop('checked') ? '1' : '0');
-            setSetting(SETTING_DEAL_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_MIN_PROFIT_CENTS}`, price_options).val());
-            setSetting(SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS, $(`#${SETTING_DEAL_BOOSTER_MIN_PROFIT_CENTS}`, price_options).val());
-            setSetting(SETTING_DEAL_MAX_ITEMS_PER_SCAN, $(`#${SETTING_DEAL_MAX_ITEMS_PER_SCAN}`, price_options).val());
-            setSetting(SETTING_DEAL_MAX_SPEND_PER_SCAN, $(`#${SETTING_DEAL_MAX_SPEND_PER_SCAN}`, price_options).val());
-            setSetting(SETTING_DEAL_SCAN_DELAY_MS, $(`#${SETTING_DEAL_SCAN_DELAY_MS}`, price_options).val());
 
             window.location.reload();
         });
-
-            // Initialize deal scanner after settings modal is created
-            initDealScanner();
     }
     //#endregion
 
@@ -4631,5 +4633,6 @@
     };
     //#endregion
 
+        initDealScanner();
 
 }(jQuery, async));;

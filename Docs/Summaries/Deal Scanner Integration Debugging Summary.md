@@ -1,0 +1,35 @@
+# Deal Scanner Integration Debugging Summary
+
+## 1. Project Context
+- **Base:** Steam Economy Enhancer v7.3.0 (`code.user.js`)
+- **Feature:** Custom "Deal Scanner" module merge
+- **Status:** Merging constants, functions, and UI components
+
+## 2. Issue 1: Duplicate Constant Declaration (Resolved)
+
+### Symptom
+Settings checkbox state not persisting.
+
+### Root Cause
+`const SETTING_DEAL_SCANNER_ENABLED` was declared twice:
+1. Once globally
+2. Once in `//#region Deal Scanner`
+
+### Fix
+Removed duplicate `const` declarations in the `//#region Deal Scanner` block.
+
+## 3. Issue 2: Settings Button `javascript:void(0)` (Active)
+
+### Symptom
+Clicking "Open Settings" triggers `javascript:void(0)` in the status bar and fails to open the modal.
+
+### Analysis
+- The button likely has `href="javascript:void(0)"` as a fallback.
+- The `onclick` handler (or jQuery event listener) is not being attached.
+- **Cause:** The script is crashing during initialization (likely due to the `const` error or a syntax error from the manual edit).
+- **Result:** The `openSettings` function is never defined, so the button falls back to its `href`.
+
+### Troubleshooting Steps
+1. **Check Console:** Look for `SyntaxError` or `ReferenceError` in the browser console.
+2. **Tampermonkey Reload:** Ensure you clicked "Update and Reload" in the Tampermonkey dashboard, not just the browser page. The old script might still be active.
+3. **Syntax Check:** Verify the manual edit didn't break the surrounding code structure (e.g., missing semicolons or brackets).
