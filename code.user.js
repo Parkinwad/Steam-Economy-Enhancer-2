@@ -1,10 +1,10 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name         Steam Economy Enhancer 2.0
 // @icon         data:image/svg+xml,%0A%3Csvg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" clip-rule="evenodd" viewBox="0 0 267 267"%3E%3Ccircle cx="133.3" cy="133.3" r="133.3" fill="%2326566c"/%3E%3Cpath fill="%23ebebeb" fill-rule="nonzero" d="m50 133 83-83 84 83-84 84-83-84Zm83 62 62-61-62-62v123Z"/%3E%3C/svg%3E
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.16
+// @version      0.1.17
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -390,7 +390,6 @@
     function setSetting(name, value) {
         try {
             localStorage.setItem(name, value);
-            logConsole(`Saved setting: ${name} = ${value}`);
         } catch (e) {
             logConsole(`Failed to set setting ${name}, ${e}.`);
             return false;
@@ -2705,7 +2704,7 @@
 
             $('#see_settings').remove();
             $('#global_action_menu').
-                prepend('<span id="see_settings"><a href="javascript:void(0)">ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ Steam Economy Enhancer</a></span>');
+                  prepend('<span id="see_settings"><a href="javascript:void(0)">Steam Economy Enhancer</a></span>')
             $('#see_settings').on('click', '*', () => openSettings());
 
             const appId = getActiveInventory().m_appid;
