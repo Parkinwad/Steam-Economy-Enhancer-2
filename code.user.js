@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.2.0
+// @version      0.2.01
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -594,6 +594,7 @@
     let dealScannerActive = false;
     let dealsFound = [];
     let totalSpentOnScans = 0;
+    let cardScannerActive = false;
     // Steam Market app IDs for common games with trading cards
     const GAMES_WITH_CARDS = [
         { appid: 730, name: 'Counter-Strike 2', type: 'card', cards: [] },
@@ -861,7 +862,6 @@
 
     // Deal scanner state variables for card module
     let cardScannerDeals = [];
-    let cardScannerActive = false;
 
     /**
     * Create actual test data for Subnautica trading cards
@@ -1114,7 +1114,7 @@ function initSubnauticaCardScannerTestButton() {
     testSection.style.cssText = 'margin-top: 15px; padding-top: 10px; border-top: 1px solid #3c3f43;';
     
     const title = document.createElement('h4');
-    title.textContent = '🐠 Subnautica Card Scanner Test Mode';
+    title.textContent = '🎴 Subnautica Card Scanner Test Mode';
     title.style.cssText = 'color: #27ae60; font-size: 12px; margin-bottom: 8px;';
     
     const btnContainer = document.createElement('div');
@@ -1122,14 +1122,14 @@ function initSubnauticaCardScannerTestButton() {
     testSection.appendChild(btnContainer);
     
     // Insert after Deal Scanner section
-    const dealScannerSection = container.querySelector('.deal-scanner-section, h3[color*="Deal"]');
-    if (dealScannerSection) {
-        container.insertBefore(testSection, dealScannerSection.nextSibling);
+    const dealScannerHeading = container.querySelector('h3[color*="Deal"]');
+    if (dealScannerHeading) {
+        container.insertBefore(testSection, dealScannerHeading);
         
         // Add test button
         const testButton = document.createElement('button');
         testButton.id = 'subnautica_card_scanner_test';
-        testButton.textContent = '🐠 Test Subnautica Cards';
+        testButton.textContent = '🎴 Scan Subnautica Cards';
         testButton.style.cssText = `
             background: #27ae60;
             color: white;
@@ -1143,26 +1143,31 @@ function initSubnauticaCardScannerTestButton() {
         testButton.addEventListener('click', async function() {
             const statusSpan = document.getElementById('deal_scanner_status');
             if (statusSpan) {
-                statusSpan.textContent = '🐠 Scanning Subnautica cards...';
+                statusSpan.textContent = '🎴 Scanning Subnautica cards...';
             }
             
             try {
+                cardScannerActive = true;
+                
                 const deals = await createSubnauticaDeals();
                 displaySubnauticaCardDealsWindow(deals);
                 
                 cardScannerDeals = deals;
                 
                 if (statusSpan) {
-                    statusSpan.textContent = `🐠 Found ${deals.length} profitable card deal(s)!`;
+                    statusSpan.textContent = `🎴 Found ${deals.length} profitable card deal(s)!`;
                 }
             } catch (error) {
                 console.error('Subnautica card scanner error:', error);
+                cardScannerActive = false;
                 alert('Error scanning Subnautica cards: ' + error.message);
             }
         });
         
         btnContainer.appendChild(testButton);
     }
+} finally {
+    cardScannerActive = false;  // <-- This is redundant but harmless
 }
 
 /**
@@ -1182,7 +1187,7 @@ function handleSubnauticaCardScannerSaveSettings() {
 function handleSubnauticaCardScannerRun() {
     const statusSpan = document.getElementById('deal_scanner_status');
     if (statusSpan) {
-        statusSpan.textContent = '🐠 Scanning Subnautica cards...';
+        statusSpan.textContent = '🎴 Scanning Subnautica cards...';
     }
     
     createSubnauticaDeals().then(deals => {
@@ -1191,7 +1196,7 @@ function handleSubnauticaCardScannerRun() {
         cardScannerDeals = deals;
         
         if (typeof statusSpan !== 'undefined') {
-            statusSpan.textContent = `🐠 Found ${deals.length} profitable card deal(s)!`;
+            statusSpan.textContent = `🎴 Found ${deals.length} profitable card deal(s)!`;
         }
     }).catch(error => {
         console.error('Subnautica card scanner error:', error);
