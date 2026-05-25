@@ -1,10 +1,10 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name         Steam Economy Enhancer 2.0
 // @icon         data:image/svg+xml,%0A%3Csvg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" clip-rule="evenodd" viewBox="0 0 267 267"%3E%3Ccircle cx="133.3" cy="133.3" r="133.3" fill="%2326566c"/%3E%3Cpath fill="%23ebebeb" fill-rule="nonzero" d="m50 133 83-83 84 83-84 84-83-84Zm83 62 62-61-62-62v123Z"/%3E%3C/svg%3E
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.2.03
+// @version      0.2.02
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -108,7 +108,7 @@
         'COP',  // Colombian Peso (unit: 1)
         'TWD',  // New Taiwan Dollar (unit: 1)
         'KZT',  // Kazakhstani Tenge (unit: 1)
-        'CRC',  // Costa Rican Col�n (unit: 5)
+        'CRC',  // Costa Rican Colón (unit: 5)
         'UYU',  // Uruguayan Peso (unit: 1)
         'KRW',  // South Korean Won (unit: 10)
         'VND',  // Vietnamese Dong (unit: 500)
@@ -1008,7 +1008,7 @@ function displaySubnauticaCardDealsWindow(deals) {
     
     const header = document.createElement('div');
     header.style.cssText = 'border-bottom: 1px solid #3c3f43; padding-bottom: 10px; margin-bottom: 15px;';
-    header.innerHTML = '<h3 style="color: #27ae60; margin: 0;">?? ?? Subnautica Card Scanner Results</h3>';
+    header.innerHTML = '<h3 style="color: #27ae60; margin: 0;">🐠 Subnautica Card Scanner Results</h3>';
     
     const dealsContainer = document.createElement('div');
     dealsContainer.style.cssText = 'margin-bottom: 15px;';
@@ -1032,8 +1032,8 @@ function displaySubnauticaCardDealsWindow(deals) {
                 </div>
                 <div style="font-size: 11px; color: #a0a0a0; margin-bottom: 5px;">
                     Rarity: <span style="color: #f39c12">${deal.item.rarity}</span> | 
-                    Current: ${deal.currentPrice_cents}� | 
-                    Expected Sell: ${deal.expectedSell_cents}�
+                    Current: ${deal.currentPrice_cents}¢ | 
+                    Expected Sell: ${deal.expectedSell_cents}¢
                 </div>
             `;
             
@@ -1052,7 +1052,7 @@ function displaySubnauticaCardDealsWindow(deals) {
             
             buyBtn.addEventListener('click', async function() {
                 if (deal.item.appid === 264710 && deal.item.contextid === '2') {
-                    const confirmMsg = `Place buy order for ${deal.item.name} at ${deal.currentPrice_cents}�?` +
+                    const confirmMsg = `Place buy order for ${deal.item.name} at ${deal.currentPrice_cents}¢?` +
                         ` Expected profit: ${deal.profit_percentage}`;
                     
                     if (confirm(confirmMsg)) {
@@ -1129,7 +1129,7 @@ function initSubnauticaCardScannerTestButton() {
         // Add test button
         const testButton = document.createElement('button');
         testButton.id = 'subnautica_card_scanner_test';
-        testButton.textContent = '?? Scan Subnautica Cards';
+        testButton.textContent = '🎴 Scan Subnautica Cards';
         testButton.style.cssText = `
             background: #27ae60;
             color: white;
@@ -1143,7 +1143,7 @@ function initSubnauticaCardScannerTestButton() {
         testButton.addEventListener('click', async function() {
             const statusSpan = document.getElementById('deal_scanner_status');
             if (statusSpan) {
-                statusSpan.textContent = '?? ?? Scanning Subnautica cards...;
+                statusSpan.textContent = '🎴 Scanning Subnautica cards...';
             }
             
             try {
@@ -1155,7 +1155,7 @@ function initSubnauticaCardScannerTestButton() {
                 cardScannerDeals = deals;
                 
                 if (statusSpan) {
-                    statusSpan.textContent = `?? Found ${deals.length} profitable card deal(s)!`;
+                    statusSpan.textContent = `🎴 Found ${deals.length} profitable card deal(s)!`;
                 }
             } catch (error) {
                 console.error('Subnautica card scanner error:', error);
@@ -1185,7 +1185,7 @@ function handleSubnauticaCardScannerSaveSettings() {
 function handleSubnauticaCardScannerRun() {
     const statusSpan = document.getElementById('deal_scanner_status');
     if (statusSpan) {
-        statusSpan.textContent = '?? ?? Scanning Subnautica cards...;
+        statusSpan.textContent = '🎴 Scanning Subnautica cards...';
     }
     
     createSubnauticaDeals().then(deals => {
@@ -1194,7 +1194,7 @@ function handleSubnauticaCardScannerRun() {
         cardScannerDeals = deals;
         
         if (typeof statusSpan !== 'undefined') {
-            statusSpan.textContent = `?? Found ${deals.length} profitable card deal(s)!`;
+            statusSpan.textContent = `🎴 Found ${deals.length} profitable card deal(s)!`;
         }
     }).catch(error => {
         console.error('Subnautica card scanner error:', error);
@@ -3024,7 +3024,7 @@ window.subnauticaCardScannerTestModule = {
                         <input id="quick_sell_input" style="background-color: black;color: white;border: transparent;max-width:65px;text-align:center;" type="number" value="${((orderbook.lowest_sell_order || 0) / 100).toFixed(2)}" step="0.01" />&nbsp;
                         <a class="item_market_action_button item_market_action_button_green quick_sell_custom">
                             <span class="item_market_action_button_edge item_market_action_button_left"></span>
-                            <span class="item_market_action_button_contents">?Sell</span>
+                            <span class="item_market_action_button_contents">➜Sell</span>
                             <span class="item_market_action_button_edge item_market_action_button_right"></span>
                             <span class="item_market_action_button_preload"></span>
                         </a>
@@ -3299,7 +3299,7 @@ window.subnauticaCardScannerTestModule = {
                     const sellPrice = calculateSellPriceBeforeFees(null, orderbook, false, 0, 65535);
 
                     const itemPrice = sellPrice == 65535
-                        ? '8'
+                        ? '∞'
                         : formatPrice(market.getPriceIncludingFees(sellPrice));
 
                     const elementName = `${(currentPage == PAGE_TRADEOFFER ? '#item' : '#')}${item.appid}_${item.contextid}_${item.id}`;
@@ -3381,7 +3381,7 @@ window.subnauticaCardScannerTestModule = {
             // "amount" : "1",
             // "status" : 2,
             // "original_amount" : "1",
-            // "background_color" : ??,
+            // "background_color" : "",
             // "icon_url" : "xx",
             // "icon_url_large" : "xxx",
             // "descriptions" : [{
@@ -3481,7 +3481,7 @@ window.subnauticaCardScannerTestModule = {
                             $(
                                 '.market_table_value > span:nth-child(1) > span:nth-child(1) > span:nth-child(1)',
                                 listingUI
-                            ).append(` ? <span title="This is likely the highest buy order price.">${highestBuyOrderPrice
+                            ).append(` ➤ <span title="This is likely the highest buy order price.">${highestBuyOrderPrice
                                 }</span>`); 
 
                             logConsole('============================');
@@ -3901,7 +3901,7 @@ window.subnauticaCardScannerTestModule = {
             }
 
             $('#my_market_selllistings_number').append(`<span id="my_market_sell_listings_total_amount"> [${totalSellOrderAmount}]</span>`)
-                .append(`<span id="my_market_sell_listings_total_price">, ${formatPrice(totalSellOrderPriceBuyer)} ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¾ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤ ${formatPrice(totalSellOrderPriceSeller)}</span>`);
+                .append(`<span id="my_market_sell_listings_total_price">, ${formatPrice(totalSellOrderPriceBuyer)} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¾ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤ ${formatPrice(totalSellOrderPriceSeller)}</span>`);
 
             $('#my_market_buylistings_number').append(`<span id="my_market_buy_listings_total_amount"> [${totalBuyOrderAmount}]</span>`)
                 .append(`<span id="my_market_buy_listings_total_price">, ${formatPrice(totalBuyOrderPrice)}</span>`);
@@ -4105,8 +4105,8 @@ window.subnauticaCardScannerTestModule = {
             let asc = true;
 
             // (Re)set the asc/desc arrows.
-            const arrow_down = 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼';
-            const arrow_up = 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â²';
+            const arrow_down = 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼';
+            const arrow_up = 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â²';
 
             $('.market_listing_table_header > span', elem).each(function () {
                 if ($(this).hasClass('market_listing_edit_buttons')) {
@@ -4789,7 +4789,7 @@ window.subnauticaCardScannerTestModule = {
             <div style="margin-top:12px; border-top: 1px solid #444; padding-top: 8px;">
                 <h3 style="color: #407736; margin: 0 0 8px 0;">Deal Scanner</h3>
                 <div style="margin-top:6px;">
-                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${Number(getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED)) == 1 ? "checked" : ??}>
+                    <input type="checkbox" id="${SETTING_DEAL_SCANNER_ENABLED}" ${Number(getSettingWithDefault(SETTING_DEAL_SCANNER_ENABLED)) == 1 ? "checked" : ""}>
                     Enable Deal Scanner
                 </div>
                 <div style="margin-top:6px;">
