@@ -1166,8 +1166,6 @@ function initSubnauticaCardScannerTestButton() {
         
         btnContainer.appendChild(testButton);
     }
-} finally {
-    cardScannerActive = false;  // <-- This is redundant but harmless
 }
 
 /**
