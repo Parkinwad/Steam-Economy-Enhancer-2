@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.2.01
+// @version      0.2.02
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -4841,6 +4841,11 @@ window.subnauticaCardScannerTestModule = {
 
             // Initialize deal scanner after settings modal is created
             initDealScanner();
+            
+            // Initialize Subnautica card scanner test button after settings modal is created
+            if (typeof initSubnauticaCardScannerTestButton === 'function') {
+                initSubnauticaCardScannerTestButton();
+            }
     }
     //#endregion
 
