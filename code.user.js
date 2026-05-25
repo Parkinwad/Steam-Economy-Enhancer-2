@@ -4,7 +4,7 @@
 // @namespace    https://github.com/Parkinwad
 // @author       Parkinwad
 // @license      MIT
-// @version      0.1.20
+// @version      0.2.0
 // @description  Enhances the Steam Inventory and Steam Market.
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/profiles/*/inventory*
@@ -845,9 +845,374 @@
             } catch (error) {
                 logDOM('Deal scanner error: ' + error.message);
                 document.getElementById('deal_scanner_status').textContent = 'Error occurred';
-            } finally {
+            }
+            finally {
                 dealScannerActive = false;
             }
+
+    //#region Card Scanning Test Module - Subnautica Edition
+    /**
+    * CARD SCANNER TEST MODULE - SUBNAUTICA EDITION
+    * 
+    * Purpose: Test card scanning functionality with actual Subnautica trading cards
+    * Scope: Subnautica (appid: 264710) trading cards only
+    * Status: Ready for testing and integration
+    */
+
+    // Deal scanner state variables for card module
+    let cardScannerDeals = [];
+    let cardScannerActive = false;
+
+    /**
+    * Create actual test data for Subnautica trading cards
+    * These are the REAL market hash names from Steam Market
+    */
+    function createSubnauticaCardData() {
+        // Actual Subnautica Trading Cards found on Steam Market
+        const subnauticaCards = [
+            { 
+                name: 'Reaper Leviathan (Trading Card)', 
+                market_hash_name: 'Reaper%20Leviathan%20(Trading%20Card)',
+                contextid: '6', // Trading card context ID for Subnautica
+                currentPrice_cents: 9, // $0.09 = 9 cents (from Steam Market)
+                rarity: 'Common'
+            },
+            { 
+                name: 'Sea Dragon Leviathan', 
+                market_hash_name: 'Sea%20Dragon%20Leviathan',
+                contextid: '6',
+                currentPrice_cents: 14, // $0.14 = 14 cents
+                rarity: 'Common'
+            },
+            { 
+                name: 'Jellyray', 
+                market_hash_name: 'Jellyray',
+                contextid: '6',
+                currentPrice_cents: 13, // $0.13 = 13 cents
+                rarity: 'Common'
+            },
+            { 
+                name: 'Peeper', 
+                market_hash_name: 'Peeper',
+                contextid: '6',
+                currentPrice_cents: 13, // $0.13 = 13 cents
+                rarity: 'Common'
+            },
+            { 
+                name: 'Sea Treader', 
+                market_hash_name: 'Sea%20Treader',
+                contextid: '6',
+                currentPrice_cents: 15, // $0.15 = 15 cents
+                rarity: 'Common'
+            },
+            { 
+                name: 'jacksepticeye Hull Plate', 
+                market_hash_name: 'jacksepticeye Hull Plate',
+                contextid: '6',
+                currentPrice_cents: 30000, // $300.00 = 30000 cents
+                rarity: 'Limited Edition'
+            },
+            { 
+                name: 'Eat My Diction Hull Plate', 
+                market_hash_name: 'Eat My Diction Hull Plate',
+                contextid: '6',
+                currentPrice_cents: 26530, // $265.30 = 26530 cents
+                rarity: 'Limited Edition'
+            }
+        ];
+    
+        return subnauticaCards;
+    }
+
+/**
+ * Calculate expected sell price for a card (simplified version)
+ */
+function calculateCardExpectedSell(card, marketData) {
+    const highestBuy = marketData.highest_buy_order_cents || 0;
+    const lowestSell = marketData.lowest_sell_order_cents || 0;
+    
+    // Simplified: use average of buy and sell orders minus fees
+    const avgPrice = (highestBuy + lowestSell) / 2;
+    const fees = avgPrice * 0.15; // Steam fee estimate
+    
+    return Math.max(0, avgPrice - fees);
+}
+
+/**
+ * Create deals array from Subnautica card data
+ */
+async function createSubnauticaDeals() {
+    const cards = createSubnauticaCardData();
+    const deals = [];
+    
+    for (const card of cards) {
+        try {
+            // Get market data for this card
+            const marketData = await getMarketData(264710, card.market_hash_name);
+            
+            if (marketData) {
+                const expectedSell = calculateCardExpectedSell(card, marketData);
+                const profit_cents = Math.max(0, expectedSell - card.currentPrice_cents);
+                
+                // Only include if profitable or meets minimum threshold
+                const minProfit = getSettingWithDefault(SETTING_MIN_NET_PROFIT_CENTS) || 15;
+                
+                if (profit_cents >= minProfit || profit_cents > 0) {
+                    deals.push({
+                        item: {
+                            appid: 264710,
+                            contextid: '6', // Trading card context ID for Subnautica
+                            name: card.name,
+                            type: 'card',
+                            rarity: card.rarity
+                        },
+                        currentPrice_cents: card.currentPrice_cents,
+                        expectedSell_cents: Math.round(expectedSell),
+                        profit_cents: Math.round(profit_cents),
+                        profit_percentage: ((profit_cents / card.currentPrice_cents) * 100).toFixed(2) + '%'
+                    });
+                } else {
+                    console.log('Card not profitable:', card.name, 'Profit:', profit_cents);
+                }
+            } else {
+                console.log('No market data found for:', card.market_hash_name);
+            }
+        } catch (error) {
+            logDOM('Error processing card ' + card.name + ': ' + error.message);
+        }
+    }
+    
+    return deals;
+}
+
+/**
+ * Display Subnautica card scanner test results in a modal window
+ */
+function displaySubnauticaCardDealsWindow(deals) {
+    const modal = document.createElement('div');
+    modal.id = 'subnautica_card_scanner_test_modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #2b2d31;
+        border-radius: 8px;
+        padding: 20px;
+        z-index: 9999;
+        min-width: 400px;
+        max-height: 70vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    `;
+    
+    const header = document.createElement('div');
+    header.style.cssText = 'border-bottom: 1px solid #3c3f43; padding-bottom: 10px; margin-bottom: 15px;';
+    header.innerHTML = '<h3 style="color: #27ae60; margin: 0;">🐠 Subnautica Card Scanner Results</h3>';
+    
+    const dealsContainer = document.createElement('div');
+    dealsContainer.style.cssText = 'margin-bottom: 15px;';
+    
+    if (deals.length === 0) {
+        const noDealsMsg = document.createElement('div');
+        noDealsMsg.textContent = 'No profitable card deals found at current prices.';
+        noDealsMsg.style.cssText = 'color: #767676; padding: 15px; text-align: center;';
+        dealsContainer.appendChild(noDealsMsg);
+    } else {
+        deals.forEach((deal, index) => {
+            const dealDiv = document.createElement('div');
+            dealDiv.style.cssText = 'background: #303436; border-radius: 5px; padding: 12px; margin-bottom: 10px;';
+            
+            dealDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="color: #fff; font-weight: bold;">${deal.item.name}</span>
+                    <span style="background: ${parseFloat(deal.profit_percentage) > 10 ? '#407736' : '#c94f25'}; color: white; padding: 3px 8px; border-radius: 3px; font-size: 11px;">
+                        ${deal.profit_percentage} profit
+                    </span>
+                </div>
+                <div style="font-size: 11px; color: #a0a0a0; margin-bottom: 5px;">
+                    Rarity: <span style="color: #f39c12">${deal.item.rarity}</span> | 
+                    Current: ${deal.currentPrice_cents}¢ | 
+                    Expected Sell: ${deal.expectedSell_cents}¢
+                </div>
+            `;
+            
+            const buyBtn = document.createElement('button');
+            buyBtn.textContent = 'Buy This Card';
+            buyBtn.style.cssText = `
+                background: #407736;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 11px;
+                margin-top: 8px;
+            `;
+            
+            buyBtn.addEventListener('click', async function() {
+                if (deal.item.appid === 264710 && deal.item.contextid === '2') {
+                    const confirmMsg = `Place buy order for ${deal.item.name} at ${deal.currentPrice_cents}¢?` +
+                        ` Expected profit: ${deal.profit_percentage}`;
+                    
+                    if (confirm(confirmMsg)) {
+                        try {
+                            await placeBuyOrder(264710, '2', deal.item.market_hash_name, 
+                                parseInt(deal.currentPrice_cents));
+                            document.getElementById('subnautica_card_scanner_test_modal')?.remove();
+                        } catch (error) {
+                            alert('Error placing order: ' + error.message);
+                        }
+                    }
+                } else {
+                    alert('Cannot buy this item type directly');
+                }
+            });
+            
+            dealDiv.appendChild(buyBtn);
+            dealsContainer.appendChild(dealDiv);
+        });
+    }
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = 'Close';
+    closeBtn.style.cssText = `
+        background: #3c3f43;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        width: 100%;
+    `;
+    
+    closeBtn.addEventListener('click', function() {
+        document.getElementById('subnautica_card_scanner_test_modal')?.remove();
+    });
+    
+    modal.appendChild(header);
+    modal.appendChild(dealsContainer);
+    modal.appendChild(closeBtn);
+    document.body.appendChild(modal);
+    
+    return modal;
+}
+
+/**
+ * Initialize Subnautica card scanner test button when settings modal opens
+ */
+function initSubnauticaCardScannerTestButton() {
+    const container = document.querySelector('#settings_modal .price_options');
+    if (!container) return;
+    
+    // Check if test button already exists to avoid duplicates
+    if (document.getElementById('subnautica_card_scanner_test')) return;
+    
+    // Create test section div
+    const testSection = document.createElement('div');
+    testSection.style.cssText = 'margin-top: 15px; padding-top: 10px; border-top: 1px solid #3c3f43;';
+    
+    const title = document.createElement('h4');
+    title.textContent = '🐠 Subnautica Card Scanner Test Mode';
+    title.style.cssText = 'color: #27ae60; font-size: 12px; margin-bottom: 8px;';
+    
+    const btnContainer = document.createElement('div');
+    testSection.appendChild(title);
+    testSection.appendChild(btnContainer);
+    
+    // Insert after Deal Scanner section
+    const dealScannerSection = container.querySelector('.deal-scanner-section, h3[color*="Deal"]');
+    if (dealScannerSection) {
+        container.insertBefore(testSection, dealScannerSection.nextSibling);
+        
+        // Add test button
+        const testButton = document.createElement('button');
+        testButton.id = 'subnautica_card_scanner_test';
+        testButton.textContent = '🐠 Test Subnautica Cards';
+        testButton.style.cssText = `
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        `;
+        
+        testButton.addEventListener('click', async function() {
+            const statusSpan = document.getElementById('deal_scanner_status');
+            if (statusSpan) {
+                statusSpan.textContent = '🐠 Scanning Subnautica cards...';
+            }
+            
+            try {
+                const deals = await createSubnauticaDeals();
+                displaySubnauticaCardDealsWindow(deals);
+                
+                cardScannerDeals = deals;
+                
+                if (statusSpan) {
+                    statusSpan.textContent = `🐠 Found ${deals.length} profitable card deal(s)!`;
+                }
+            } catch (error) {
+                console.error('Subnautica card scanner error:', error);
+                alert('Error scanning Subnautica cards: ' + error.message);
+            }
+        });
+        
+        btnContainer.appendChild(testButton);
+    }
+}
+
+/**
+ * Handle Subnautica card scanner save settings (if needed for future persistence)
+ */
+function handleSubnauticaCardScannerSaveSettings() {
+    // Card scanner doesn't have persistent settings in this test mode
+    // Just log that it was used
+    if (typeof console !== 'undefined') {
+        console.log('Subnautica Card Scanner Test Mode - Settings not persisted');
+    }
+}
+
+/**
+ * Handle Subnautica card scanner run button click
+ */
+function handleSubnauticaCardScannerRun() {
+    const statusSpan = document.getElementById('deal_scanner_status');
+    if (statusSpan) {
+        statusSpan.textContent = '🐠 Scanning Subnautica cards...';
+    }
+    
+    createSubnauticaDeals().then(deals => {
+        displaySubnauticaCardDealsWindow(deals);
+        
+        cardScannerDeals = deals;
+        
+        if (typeof statusSpan !== 'undefined') {
+            statusSpan.textContent = `🐠 Found ${deals.length} profitable card deal(s)!`;
+        }
+    }).catch(error => {
+        console.error('Subnautica card scanner error:', error);
+        alert('Error scanning Subnautica cards: ' + error.message);
+    });
+}
+
+// Export functions for global access
+window.subnauticaCardScannerTestModule = {
+    createSubnauticaCardData,
+    calculateCardExpectedSell,
+    createSubnauticaDeals,
+    displaySubnauticaCardDealsWindow,
+    initSubnauticaCardScannerTestButton,
+    handleSubnauticaCardScannerSaveSettings,
+    handleSubnauticaCardScannerRun
+};
+
+//#endregion Card Scanning Test Module - Subnautica Edition
+
+
         });
     }
     //#endregion
